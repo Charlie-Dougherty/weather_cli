@@ -34,7 +34,7 @@ impl WeatherApi {
             .await
             .map_err(|_| WeatherError::RequestFailed("Request failed".to_string()))?;
 
-        match response {
+        /* match response {
             Ok(response) => {
                 let status = response.status();
                 if status.is_success() {
@@ -48,9 +48,17 @@ impl WeatherApi {
                 }
             }
             Err(_) => Err(WeatherError::RequestFailed("Request failed".to_string())),
+        }*/
+
+        // Check if the status code indicates success
+        if !response.status().is_success() {
+            return Err(WeatherError::RequestFailed(
+                format!("Request failed with status code: {}", response.status())
+            ));
         }
-        reponse.json::<WeatherData>()
-        .await
-        map_err(|_| WeatherError::ParseError("Request failed".to_string()))?;
+        
+        response.json::<WeatherData>()
+            .await
+            .map_err(|_| WeatherError::ParseError("Request failed".to_string()))?
     }
 
