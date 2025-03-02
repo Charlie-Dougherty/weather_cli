@@ -31,7 +31,8 @@ impl WeatherApi {
 
         let response = self.client.get(&url)
             .send()
-            .await?;
+            .await
+            .map_err(|_| WeatherError::RequestFailed("Request failed".to_string()))?;
 
         match response {
             Ok(response) => {
