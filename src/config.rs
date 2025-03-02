@@ -49,5 +49,8 @@ impl WeatherApi {
             }
             Err(_) => Err(WeatherError::RequestFailed("Request failed".to_string())),
         }
+        reponse.json::<WeatherData>()
+        .await
+        map_err(|_| WeatherError::ParseError("Request failed".to_string()))?;
     }
 
